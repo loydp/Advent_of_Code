@@ -24,6 +24,7 @@ def d1_2(stores):
    two = max(stores)
    stores.remove(two)
    three = max(stores)
+   # could sort first
    return sum([one, two, three])
 
 stores = get_stores()

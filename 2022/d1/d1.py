@@ -1,5 +1,5 @@
 
-file_path = "resources/res.txt"
+file_path = "res.txt"
 def get_stores():
    stores = []
    with open(file_path) as f:

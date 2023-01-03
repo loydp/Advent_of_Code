@@ -1,3 +1,14 @@
+/**
+ * @file d4.cpp
+ * @author Peter Loyd
+ * @brief Day 4 of Advent of Code 2021
+ * @version 0.1
+ * @date 2023-01-02
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -15,9 +26,7 @@ const int board_size = 5;
  * @brief Holds a bingo board.
  * Constructor takes a string of 25 numbers.
  * Numbers are placed into a map.
- * Also holds the numbers in a matrix to check positions.
- * Number 
- * 
+ * Also holds the numbers in a matrix to check filled positions
  */
 class Board {
 
@@ -40,8 +49,9 @@ class Board {
       }
    }
 
-   ~Board() {
-      cout << "DESTROYING" << endl;
+   Board(const Board &t) {
+      this->nums = t.nums;
+      this->dict = t.dict;
    }
 
    int fill_number(int num) {
@@ -52,8 +62,6 @@ class Board {
          this->nums[row][col] = true;
          hello += 1;
          if (bingo(row, col)) {
-            cout << "Bingo!" << endl;
-            print();
             return score(num);
          }
       }
@@ -61,12 +69,6 @@ class Board {
    }
 
    void print() {
-      /*
-      printf("\nBoard dict keys: \n");
-      for (auto coords : dict) {
-         printf("keys: %i ", coords.first);
-      }
-      */
       printf("\nBoard: nums\n");
       for (auto row : this->nums) {
          for (int i = 0; i < board_size; i++) {
@@ -74,17 +76,33 @@ class Board {
          }
          printf("\n");
       }
-      printf("s: %i", hello);
-
    }
 
    private:
 
    int score(int num) {
-      return 1;
+      int leftover = 0;
+      for (auto coord : dict) {
+         int k = coord.first;
+         int row = get<0>(coord.second);
+         int col = get<1>(coord.second);
+         if (!nums[row][col]) {
+            leftover += k;
+         }
+      }
+      return leftover * num;
    }
 
+   /**
+    * @brief Check to see if a bingo board has achieved a bingo
+    * 
+    * @param row 
+    * @param col 
+    * @return true 
+    * @return false 
+    */
    bool bingo(int row, int col) {
+      // take a row, check every cell in it
       int r = 0;
       for (auto cell : nums[row]) {
          if (cell)
@@ -95,9 +113,10 @@ class Board {
       if (r == board_size)
          return true;
 
+      // hold the column, check each row for that column
       int c = 0;
       for (int i = 0; i < board_size; i++) {
-         if (nums[row][i])
+         if (nums[i][col])
             c++;
          else
             break;
@@ -160,32 +179,12 @@ vector<Board> get_boards(vector<string> &data) {
       int count = 0;
       matrix.push_back(stoi(data[i]));
       if (i % 25 == 0) {
-         //printf("Before\n");
-         printf("\nCount -> %i\n", count);
          count++;
-         boards.push_back(Board(matrix));
-         //printf("After\n");
+         boards.emplace_back(Board(matrix));
+         //boards.push_back(Board(matrix));
          matrix.clear();
       }
    }
-   boards.pop_back();
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   printf("here");
-   boards.pop_back();
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
-   boards.pop_back();
-   boards.push_back(Board({1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5}));
 
    return boards;
 }
@@ -203,8 +202,30 @@ int sol1(vector<int> &numbers, vector<Board> &boards) {
    return 0;
 }
 
-//const string path = "data.txt";
-const string path = "testdata.txt";
+int sol2(vector<int> &numbers, vector<Board> &boards) {
+   int score;
+   vector<int> scores;
+   vector<bool> won(boards.size(), false);
+   for (auto num : numbers) {
+      for (int i = 0; i < boards.size(); i++) {
+         if (won[i] == true)
+            continue;
+         score = boards[i].fill_number(num);
+         if (score) {
+            won[i] = true;
+            scores.push_back(score);
+            score = 0;
+            if (boards.size() == scores.size()) {
+               return scores[scores.size() - 1];
+            }
+         }
+      }
+   }
+   return -1;
+}
+
+const string path = "data.txt";
+//const string path = "testdata.txt";
 
 
 int main() {
@@ -212,8 +233,14 @@ int main() {
    vector<int> numbers = get_nums(data);
    vector<Board> boards = get_boards(data);
 
+   vector<int> numbers2 = numbers;
+   vector<Board> boards2 = boards;
+
    int i = sol1(numbers, boards);
    cout << i << endl;
+
+   int k = sol2(numbers2, boards2);
+   cout << k << endl;
 
    return 0;
 }

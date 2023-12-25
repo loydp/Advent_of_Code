@@ -4,9 +4,9 @@ def get_input(path: str):
         corrected = []
 
         for i, line in enumerate(lines):
-            temp = line.strip().split(" ")[2:]
+            temp = line.strip().split(" ")
             temp = [item for item in temp if item != ""]
-            temp = [int(item) if item != "|" else item for item in temp]
+            temp = [int(item) if item != "|" else item for item in temp[2:]]
             divide_pos = temp.index("|")
             corrected.append((temp[:divide_pos], temp[divide_pos + 1 :]))
 
@@ -14,15 +14,28 @@ def get_input(path: str):
 
 
 def sol1(data):
-    pass
+    finals = []
+    for line in data:
+        power = -1
+        d = set()
+        for entry in line[0]:
+            d.add(entry)
+        for entry in line[1]:
+            if entry in d:
+                power += 1
+        if power == -1:
+            finals.append(0)
+        else:
+            finals.append(2**power)
+    return sum(finals)
 
 
 def sol2(data):
     pass
 
 
-input_path = "example.txt"
-# input_path = "input.txt"
+# input_path = "example.txt"
+input_path = "input.txt"
 
 data = get_input(input_path)
 

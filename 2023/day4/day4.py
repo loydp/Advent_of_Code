@@ -30,8 +30,31 @@ def sol1(data):
     return sum(finals)
 
 
+def num_matches(data: tuple[list[int], list[int]]) -> int:
+    set1 = set(data[0])
+    set2 = set(data[1])
+    ret_num = len(set1.intersection(set2))
+    return ret_num
+
+
+def process(data, i, memos) -> int:
+    if memos[i] != -1:
+        return memos[i]
+    matches = num_matches(data[i])
+    entry_sum = matches
+    for j in range(i + 1, i + 1 + matches):
+        entry_sum += process(data, j, memos)
+    return entry_sum
+
+
 def sol2(data):
-    pass
+    memos = [-1 for _ in range(len(data))]
+
+    result = len(data)
+
+    for i in range(len(data)):
+        result += process(data, i, memos)
+    return result
 
 
 # input_path = "example.txt"

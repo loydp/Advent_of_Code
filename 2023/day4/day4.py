@@ -44,6 +44,7 @@ def process(data, i, memos) -> int:
     entry_sum = matches
     for j in range(i + 1, i + 1 + matches):
         entry_sum += process(data, j, memos)
+    memos[i] = entry_sum
     return entry_sum
 
 
